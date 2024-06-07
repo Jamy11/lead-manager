@@ -9,6 +9,7 @@ const initialState = {
   leads: [],
   status: "idle",
   error: null,
+  //   createStatus: "idle",
 };
 
 export const fetchLeads = createAsyncThunk("leads/fetchLeads", async () => {
@@ -57,13 +58,16 @@ const leads = createSlice({
       })
       .addCase(postLead.fulfilled, (state, action) => {
         (state.status = "success"),
+          //   (state.createStatus = "success"),
           (state.leads = [action.payload, ...state.leads]);
       })
       .addCase(postLead.pending, (state) => {
         state.status = "loading";
+        // state.createStatus = "loading";
       })
       .addCase(postLead.rejected, (state, action) => {
         state.status = "failed";
+        // state.createStatus = "failed";
         state.error = action.error.message;
       });
   },
