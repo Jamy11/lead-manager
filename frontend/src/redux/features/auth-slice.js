@@ -21,11 +21,22 @@ export const getUser = createAsyncThunk("user/getUser", async (_, thunkAPI) => {
   return response.data;
 });
 
-export const loginUser = createAsyncThunk("/user/login", async (body) => {
+export const loginUser = createAsyncThunk("user/login", async (body) => {
   const response = await axiosInstance.post("/auth/login", body);
-
   return response.data;
 });
+
+export const logOutUser = createAsyncThunk(
+  "user/logout",
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState().auth;
+    if (state.token) {
+      axiosInstance.defaults.headers["Authorization"] = `Token ${state.token}`;
+    }
+    await axiosInstance.post("/auth/logout"); // Use POST instead of DELETE if your backend API requires it
+    return {};
+  }
+);
 const auth = createSlice({
   name: "auth",
   initialState,
@@ -57,6 +68,19 @@ const auth = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = state.user = null;
+      })
+      .addCase(logOutUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(logOutUser.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.isLoading = false;
+        state.user = null;
+        state.token = null;
+        localStorage.removeItem("token");
+      })
+      .addCase(logOutUser.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });

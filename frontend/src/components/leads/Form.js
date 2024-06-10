@@ -1,3 +1,4 @@
+import { logOutUser } from "@/redux/features/auth-slice";
 import { postLead } from "@/redux/features/lead-slice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 const Form = () => {
   const dispatch = useDispatch();
   const status = useSelector((state) => state.lead.status);
-  // const postStatus = useSelector((state) => state.lead.createStatus);
   const error = useSelector((state) => state.lead.error);
 
   const [formData, setFormData] = useState({
@@ -22,7 +22,6 @@ const Form = () => {
       [e.target.name]: e.target.value,
     });
   };
-  // console.log(postStatus);
   useEffect(() => {
     if (status === "failed") {
       toast.error(`Error: ${error}`, {
@@ -49,32 +48,14 @@ const Form = () => {
     }
   }, [status, error]);
 
-  // if (status === "loading") {
-  //   return <div>Loading...</div>;
-  // }
   const onSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here, e.g., send data to an API or Redux action
-    // console.log("Form submitted:", formData);
-    dispatch(postLead(formData));
-    // Reset form fields
 
-    // if (postStatus === "success") {
-    //   toast.success(`Lead Created`, {
-    //     autoClose: 8000,
-    //     position: "top-right",
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //   });
-    //   setFormData({
-    //     name: "",
-    //     email: "",
-    //     message: "",
-    //   });
-    //   console.log(postStatus);
-    //   console.log("In here");
-    // }
+    dispatch(postLead(formData));
+  };
+
+  const logoutFrom = () => {
+    dispatch(logOutUser());
   };
 
   return (
@@ -118,6 +99,8 @@ const Form = () => {
           </button>
         </div>
       </form>
+
+      <button onClick={logoutFrom}>Logout</button>
     </div>
   );
 };
