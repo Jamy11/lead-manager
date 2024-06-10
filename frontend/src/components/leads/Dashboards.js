@@ -1,6 +1,7 @@
 import React from "react";
 import Form from "./Form";
 import Leads from "./Leads";
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
 
 const Dashboards = () => {
   return (
@@ -11,4 +12,4 @@ const Dashboards = () => {
   );
 };
 
-export default Dashboards;
+export default PrivateRoute(Dashboards);

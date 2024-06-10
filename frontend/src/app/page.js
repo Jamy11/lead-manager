@@ -1,16 +1,12 @@
 "use client";
-import Header from "@/components/layouts/Header";
-import Dashboards from "@/components/leads/Dashboards";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
+import App from "@/components/app";
 export default function Home() {
   return (
     <>
       <Provider store={store}>
-        <Header />
-        <div className="container">
-          <Dashboards />
-        </div>
+        <App />
       </Provider>
     </>
   );
