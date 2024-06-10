@@ -19,7 +19,7 @@ export const deleteLeads = createAsyncThunk("leads/deleteLeads", async (id) => {
 });
 export const postLead = createAsyncThunk("leads/postLead", async (formData) => {
   const response = await axiosInstance.post(`/leads/`, formData);
-  console.log(response);
+  // console.log(response);
   return response.data;
 });
 

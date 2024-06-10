@@ -11,15 +11,13 @@ const page = () => {
     password: "",
   });
 
-  const { username, password } = formData;
-
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    dispatch(loginUser(username, password));
+    // console.log(formData.username, formData.password);
+    dispatch(loginUser(formData));
   };
   return (
     <div className="col-md-6 m-auto">

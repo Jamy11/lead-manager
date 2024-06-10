@@ -1,5 +1,6 @@
 import axiosInstance from "@/axios/axiosInstance";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { useRouter } from "next/navigation";
 
 const isBrowser = typeof window !== "undefined";
 
@@ -20,15 +21,11 @@ export const getUser = createAsyncThunk("user/getUser", async (_, thunkAPI) => {
   return response.data;
 });
 
-export const loginUser = createAsyncThunk(
-  "/user/login",
-  async ({ username, password }) => {
-    // request body
-    const body = JSON.stringify(username, password);
-    const response = await axiosInstance.post("/auth/login", body);
-    return response;
-  }
-);
+export const loginUser = createAsyncThunk("/user/login", async (body) => {
+  const response = await axiosInstance.post("/auth/login", body);
+
+  return response.data;
+});
 const auth = createSlice({
   name: "auth",
   initialState,
@@ -53,7 +50,9 @@ const auth = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.isLoading = false;
-        localStorage.setItem("token", action.payload);
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
