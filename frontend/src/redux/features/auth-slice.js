@@ -37,6 +37,12 @@ export const logOutUser = createAsyncThunk(
     return {};
   }
 );
+
+export const registerUser = createAsyncThunk("user/register", async (body) => {
+  const response = await axiosInstance.post("/auth/register", body);
+  return response.data;
+});
+
 const auth = createSlice({
   name: "auth",
   initialState,
@@ -81,6 +87,20 @@ const auth = createSlice({
       })
       .addCase(logOutUser.rejected, (state) => {
         state.isLoading = false;
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = state.user = null;
       });
   },
 });

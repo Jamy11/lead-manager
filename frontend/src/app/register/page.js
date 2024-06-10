@@ -1,8 +1,11 @@
 "use client";
+import { registerUser } from "@/redux/features/auth-slice";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const page = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -10,19 +13,19 @@ const page = () => {
     password2: "",
   });
 
-  const { username, email, password, password2 } = formData;
-
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (password !== password2) {
+    if (formData.password !== formData.password2) {
       // Handle password mismatch
       console.log("Passwords do not match");
     } else {
       // Handle form submission logic here
-      console.log("Form submitted:", formData);
+      // console.log("Form submitted:", formData);
+      delete formData.password2;
+      dispatch(registerUser(formData));
       // Reset form fields
       setFormData({
         username: "",
