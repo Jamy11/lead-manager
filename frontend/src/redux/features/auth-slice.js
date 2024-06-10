@@ -4,7 +4,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const isBrowser = typeof window !== "undefined";
 
 const initialState = {
-  token: localStorage.getItem("token"),
+  token: isBrowser ? localStorage.getItem("token") : null,
   isAuthenticated: null,
   isLoading: false,
   user: null,
@@ -20,9 +20,14 @@ export const getUser = createAsyncThunk("user/getUser", async (_, thunkAPI) => {
   return response.data;
 });
 
-export const loginUSer = createAsyncThunk(
+export const loginUser = createAsyncThunk(
   "/user/login",
-  async ({ username, password }) => {}
+  async ({ username, password }) => {
+    // request body
+    const body = JSON.stringify(username, password);
+    const response = await axiosInstance.post("/auth/login", body);
+    return response;
+  }
 );
 const auth = createSlice({
   name: "auth",
@@ -39,6 +44,18 @@ const auth = createSlice({
         state.user = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = state.user = null;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.isLoading = false;
+        localStorage.setItem("token", action.payload);
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = state.user = null;
       });

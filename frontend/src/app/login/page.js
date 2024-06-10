@@ -1,8 +1,11 @@
 "use client";
+import { loginUser } from "@/redux/features/auth-slice";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const page = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -15,7 +18,8 @@ const page = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    login(username, password);
+    console.log(formData);
+    dispatch(loginUser(username, password));
   };
   return (
     <div className="col-md-6 m-auto">
